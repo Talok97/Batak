@@ -36,23 +36,18 @@ namespace Batak
 
         public void CardDistributer(Players player)
         {
-            int i;
             Random random = new Random();
-
-            while (Deck.Count > 0)
-            {
-                foreach (Card card in Deck.ToList())
+       
+                for (int j = 0; j < 13; j++)
                 {
-                    i = random.Next(Deck.Count);
-                    Deck[i] = card;
+                    int i = random.Next(Deck.Count);
                     if (Deck[i] != null)
                     {
                         Card dealtCard = Deck[i];
                         Deck.RemoveAt(i);
                         player.Hand.Add(dealtCard);
                     }
-                }
-            }
+                }                                  
         }
 
         public void Bidding()
@@ -69,6 +64,8 @@ namespace Batak
                     {
                         Console.WriteLine($"{players.Name} bids");
                         Console.WriteLine("Declare your bid (Min: 5) or pass");
+                        
+                        players.DisplayOrderedHand();
                         string bid = Console.ReadLine();
 
                         if (string.IsNullOrEmpty(bid))
@@ -127,10 +124,11 @@ namespace Batak
                         }                                                         
                     }
 
+                    Bids.Add(players, bestBid);
+
                     if (bestBid > minimumBid)
                     {
                         minimumBid = bestBid;
-                        Bids.Add(players, bestBid);
                     }
                 }                                
             }
@@ -179,11 +177,16 @@ namespace Batak
 
         public KeyValuePair<Players, int> GetHighestBid()
         {
+            if (!Bids.Any())
+            {
+                throw new InvalidOperationException("No bids were placed.");
+            }
             return Bids.OrderByDescending(bid => bid.Value).First();
         }
 
         public void PlayGameLoop(List<Players> players, CardVerifiers cardVerifier, GameVerifiers gameVerifier) //loop the game for 13 rounds, start from highest bidder, winner of the previous hand will start the next hand
         {
+            this.Players = players;
             DeckBuilder();
 
             foreach (var player in players)

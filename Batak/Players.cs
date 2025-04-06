@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Batak
@@ -61,10 +62,7 @@ namespace Batak
             Console.WriteLine("Select the card you wish to play (choose the number).");
             Console.ResetColor();
 
-            for(int i = 0; i < Hand.Count; i++)
-            {
-                Console.WriteLine($"({i}) > {Hand[i].Suit} / {Hand[i].Rank}");
-            }
+            DisplayOrderedHand();
 
             int playerChoice = -1;
             bool validInput = false;
@@ -103,6 +101,27 @@ namespace Batak
                     Console.WriteLine($"Card played: {chosenCard.Suit} / {chosenCard.Rank}");
                     break;
                 }
+            }
+        }
+
+        public void DisplayOrderedHand()
+        {
+            var orderedHand = from card in this.Hand
+                              group card by card.Suit into suitGroup
+                              orderby suitGroup.Key descending
+                              select suitGroup;
+
+            foreach ( var group in orderedHand )
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"[{group.Key}]\t\t ");
+                Console.ResetColor();
+
+                foreach ( var card in group )
+                {
+                    Console.Write($"{card.Rank} "); // order the rank here
+                }
+                Console.WriteLine();
             }
         }
 

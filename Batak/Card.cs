@@ -58,7 +58,7 @@ namespace Batak
                 case Rank.Jack: return 1;
                 default: return 0;
             }
-        }
+        }      
     }
 
     public class CardVerifiers

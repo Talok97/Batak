@@ -15,17 +15,16 @@
 
             GameVerifiers gameVerifiers = new GameVerifiers();
             CardVerifiers cardVerifiers = new CardVerifiers();
-
-            humanPlayer.PlayerNaming();
-            botPlayer1.PlayerNaming();
-            botPlayer2.PlayerNaming();
-            botPlayer3.PlayerNaming();
-
             players.Add(humanPlayer);
             players.Add(botPlayer1);
             players.Add(botPlayer2);
             players.Add(botPlayer3);
 
+            humanPlayer.PlayerNaming();
+            botPlayer1.PlayerNaming();
+            botPlayer2.PlayerNaming();
+            botPlayer3.PlayerNaming();
+            
             gameLoop.PlayGameLoop(players, cardVerifiers, gameVerifiers);
         }
     }
