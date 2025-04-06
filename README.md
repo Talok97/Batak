@@ -19,3 +19,5 @@ While the player commands will be input by user, computer players play the game 
 GameVerifiers and CardVerifiers are classes that checks the plays adhere to game rules.<br/>
 For the time being, the application is made for to be played on console; therefore added a simple UI for clearer display and feedback to the user.<br/>
 </p>
+
+<p><em>Still work in progress...</em></p>
