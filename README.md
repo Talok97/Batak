@@ -1,7 +1,7 @@
 # Batak
 
-**Rules:**
-Batak is a trick taking game played with 4 players and a 52 card deck.
+<string>**Rules:**</strong>
+Batak is a trick taking game played with 4 players and a 52 card deck.<br/>
 Main purpose of the game is playing the biggest ranked card to the middle while following the suit and if you do that you will win that hand.
 After the cards are distributed, players bid on how many hands they can win in this match and the highest bidder gets to be the main bidder and select the trump suit.
 Cards with trump suits are special jokers which cannot be played unless they were forced to play.
