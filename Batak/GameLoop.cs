@@ -138,7 +138,7 @@ namespace Batak
         {
             var highestBid = GetHighestBid();
 
-            Console.WriteLine($"{highestBid.Key.Name} has the highest bid ({highestBid}) and will select the trump.");
+            Console.WriteLine($"{highestBid.Key.Name} has the highest bid with ({highestBid.Value}) and will select the trump.");
 
             //contunie from asking specifically the player with highest bid either human or computer
 
@@ -152,14 +152,16 @@ namespace Batak
                     string playerDecision = Console.ReadLine();
                     playerDecision = playerDecision.Trim().ToLower();
 
+                    Console.ForegroundColor = ConsoleColor.Red;
                     switch (playerDecision)
                     {
-                        case "hearts": isValidAnswer = true; return Suit.Hearts; 
-                        case "diamonds": isValidAnswer = true; return Suit.Diamonds;
-                        case "clubs": isValidAnswer = true; return Suit.Clubs;
-                        case "spades": isValidAnswer = true; return Suit.Spades;
+                        case "hearts": isValidAnswer = true; Console.WriteLine("Trump suit is hearts."); return Suit.Hearts; 
+                        case "diamonds": isValidAnswer = true; Console.WriteLine("Trump suit is diamonds."); return Suit.Diamonds;
+                        case "clubs": isValidAnswer = true; Console.WriteLine("Trump suit is clubs.");  return Suit.Clubs;
+                        case "spades": isValidAnswer = true; Console.WriteLine("Trump suit is spades."); return Suit.Spades;
                         default: Console.WriteLine("Please select a valid suit."); break;
                     }
+                    Console.ResetColor();
                 }                        
             }
 
@@ -169,6 +171,10 @@ namespace Batak
                                       group card by card.Suit into suitGroup
                                       orderby suitGroup.Count() descending
                                       select suitGroup.Key).First();
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Trump suit is {potentialTrump}");
+                Console.ResetColor();
                 return potentialTrump;                                    
             }            
 
@@ -328,7 +334,10 @@ namespace Batak
                 {
                     if (selectedCard.Suit == GameLoop.Trump)
                     {
-                        Console.WriteLine("Trump suit cannot be used unless it had to be capitalized.");
+                        if(Player.IsHuman)
+                        {
+                            Console.WriteLine("Trump suit cannot be used unless it had to be capitalized.");
+                        }
                         return false;
                     }
 
@@ -356,7 +365,10 @@ namespace Batak
 
                     if (selectedCard.Suit != mainSuit)
                     {
-                        Console.WriteLine("You must follow the suit.");
+                        if (Player.IsHuman)
+                        {
+                            Console.WriteLine("You must follow the suit.");
+                        }
                         return false;
                     }
 
@@ -368,7 +380,10 @@ namespace Batak
 
                         if (selectedCard.Rank <= highestMiddleRank)
                         {
-                            Console.WriteLine("You must play a bigger card than the one in the middle.");
+                            if (Player.IsHuman)
+                            {
+                                Console.WriteLine("You must play a bigger card than the one in the middle.");
+                            }
                             return false;
                         }
                     }
@@ -393,7 +408,10 @@ namespace Batak
                             {
                                 if (selectedCard.Rank <= highestMiddleTrumpRank)
                                 {
-                                    Console.WriteLine("You must play a card with a higher rank.");
+                                    if (Player.IsHuman)
+                                    {
+                                        Console.WriteLine("You must play a card with a higher rank.");
+                                    }
                                     return false;
                                 }
 
@@ -420,7 +438,10 @@ namespace Batak
                         {
                             if (selectedCard.Suit != GameLoop.Trump)
                             {
-                                Console.WriteLine("You must play a trump card if have one.");
+                                if (Player.IsHuman)
+                                {
+                                    Console.WriteLine("You must play a trump card if have one.");
+                                }
                                 return false;
                             }
 

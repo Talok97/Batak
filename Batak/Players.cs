@@ -47,7 +47,8 @@ namespace Batak
 
             else
             {
-                return "Bot" + Guid.NewGuid().ToString("N").Substring(0,4);
+                Name =  "Bot" + Guid.NewGuid().ToString("N").Substring(0,4);
+                return Name;
             }
 
             return "Bot12345";
@@ -69,13 +70,15 @@ namespace Batak
           
             while (true)
             {
+                validInput = false;
                 while (!validInput)
                 {
                     string playerInput = Console.ReadLine();
                     if (int.TryParse(playerInput, out playerChoice))
                     {
-                        if (playerChoice >= 0 && playerChoice < Hand.Count)
+                        if (playerChoice >= 1 && playerChoice <= Hand.Count)
                         {
+                            playerChoice -= 1;
                             validInput = true;
                         }
 
@@ -98,7 +101,7 @@ namespace Batak
                     Card chosenCard = Hand[playerChoice];
                     Hand.RemoveAt(playerChoice);
                     gameLoop.CardsInTheMiddle.Add(this, chosenCard);
-                    Console.WriteLine($"Card played: {chosenCard.Suit} / {chosenCard.Rank}");
+                    Console.WriteLine($"{Name} played: {chosenCard.Suit} / {chosenCard.Rank}");
                     break;
                 }
             }
@@ -106,20 +109,29 @@ namespace Batak
 
         public void DisplayOrderedHand()
         {
-            var orderedHand = from card in this.Hand
-                              group card by card.Suit into suitGroup
-                              orderby suitGroup.Key descending
-                              select suitGroup;
+            var flatOrderedHand = this.Hand
+                              .GroupBy(card => card.Suit)
+                              .OrderByDescending(g => g.Key)
+                              .SelectMany(g => g.OrderBy(card => card.Rank))
+                              .ToList();           
 
-            foreach ( var group in orderedHand )
+            this.Hand = flatOrderedHand;
+
+            var indexedCards = flatOrderedHand.Select((card, index) => new {Card = card, Index = index +1});
+
+            var groupedDisplay = indexedCards
+                                 .GroupBy(x => x.Card.Suit)
+                                 .OrderByDescending(g => g.Key);
+
+            foreach ( var group in groupedDisplay)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write($"[{group.Key}]\t\t ");
+                Console.Write($"[{group.Key}] \t\t");
                 Console.ResetColor();
 
-                foreach ( var card in group )
+                foreach ( var item in group)
                 {
-                    Console.Write($"{card.Rank} "); // order the rank here
+                    Console.Write($"({item.Index}) {item.Card.Rank} ");
                 }
                 Console.WriteLine();
             }
@@ -140,7 +152,7 @@ namespace Batak
                     Card chosenCard = randomCard;
                     Hand.Remove(randomCard);
                     gameLoop.CardsInTheMiddle.Add(this, chosenCard);
-                    Console.WriteLine($"Card played: {chosenCard.Suit} / {chosenCard.Rank}");
+                    Console.WriteLine($"{Name} played: {chosenCard.Suit} / {chosenCard.Rank}");
                     validMove = true;
                 }
             }           

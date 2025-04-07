@@ -15,3 +15,11 @@ namespace Batak
         public Dictionary<Players, int> Scores = new Dictionary<Players, int>();
     }
 }
+
+
+/*
+ Corrections needed:
+ * winner of the round should initiate the next round
+ * highest trump played should win over starting suit
+ * trump capitalization doesn`t work at the moment
+ */
