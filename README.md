@@ -8,7 +8,7 @@ After the cards are distributed, players bid on how many hands they can win in t
 Cards with trump suits are special jokers which cannot be played unless they were forced to play.<br/>
 Being forced to play means that if the player cannot follow the suit in the middle due to not having a card in their hand with the same suit, they can play the trump suit and win the hand.<br/>
 After a trump was forced to play, players can start a round with trump cards.<br/>
-This contunies until 13 rounds are completed and the players that lost the bid earn points depending on how many hands they won.<br/>
+This continues until 13 rounds are completed and the players that lost the bid earn points depending on how many hands they won.<br/>
 For the bidder, they earn points depending on the how many hands won if they won hands equal to or only 1 more than their bid.<br/>
 If their won hands less or more than 2 than their bid, they lose points equal to their bid.<br/>
 </p>
