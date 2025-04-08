@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Batak;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,9 @@ namespace Batak
 /*
  Corrections needed:
  * winner of the round should initiate the next round
- * highest trump played should win over starting suit
- * trump capitalization doesn`t work at the moment
+ * display won hands for the player
  */
+
+
+
+

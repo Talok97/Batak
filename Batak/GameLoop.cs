@@ -228,45 +228,35 @@ namespace Batak
             gameVerifier.UpdateScores(this);
             //update scoreboard
         }
-
         public void CheckRoundWinner(List<Players> players, GameVerifiers gameVerifier)
         {
-           if(CardsInTheMiddle.Count() == 4)
-           {
-                if (!gameVerifier.TrumpUsed)
+            if (CardsInTheMiddle.Count() == players.Count)
+            {
+                Suit leadSuit = CardsInTheMiddle.First().Value.Suit;
+
+                var trumpCards = CardsInTheMiddle.Where(kvp => kvp.Value.Suit == Trump);
+
+                if (trumpCards.Any())
                 {
-                    Suit suitToCheck = CardsInTheMiddle.First().Value.Suit;
-
-                    var winningEntry = CardsInTheMiddle
-                                         .Where(kvp => kvp.Value.Suit == suitToCheck)
-                                         .OrderByDescending(kvp => kvp.Value.Rank)
-                                         .First();
-
-                    Console.WriteLine($"{winningEntry.Key.Name} has won this hand with {winningEntry.Value.Rank} of {winningEntry.Value.Suit}");
-
+                    var winningEntry = trumpCards.OrderByDescending(kvp => kvp.Value.Rank).First();
+                    Console.WriteLine($"{winningEntry.Key.Name} wins this hand with {winningEntry.Value.Rank} of {winningEntry.Value.Suit}");
                     winningEntry.Key.WonHands++;
                 }
-
                 else
                 {
-                    Suit suitToCheck = Trump;
-
                     var winningEntry = CardsInTheMiddle
-                                       .Where(kvp => kvp.Value.Suit == Trump)
-                                       .OrderByDescending (kvp => kvp.Value.Rank)
-                                       .First();
-
-                    Console.WriteLine($"{winningEntry.Key.Name} has won this hand with {winningEntry.Value.Rank} of {winningEntry.Value.Suit}");
-
+                                        .Where(kvp => kvp.Value.Suit == leadSuit)
+                                        .OrderByDescending(kvp => kvp.Value.Rank)
+                                        .First();
+                    Console.WriteLine($"{winningEntry.Key.Name} wins this hand with {winningEntry.Value.Rank} of {winningEntry.Value.Suit}");
                     winningEntry.Key.WonHands++;
                 }
             }
         }
     }
-
     public class GameVerifiers
     {
-        public bool TrumpUsed { get; private set; } = false;      
+        public bool TrumpUsed { get; set; } = false;      
         public bool CanUseTrump(GameLoop gameLoop, Players player)
         {            
             bool hasMatchingSuit = player.Hand.Any(card => gameLoop.CardsInTheMiddle.Any(kvp => kvp.Value.Suit == card.Suit));
@@ -420,7 +410,8 @@ namespace Batak
                                       TrumpSuit = GameLoop.Trump,
                                       IsSpecialDisplay = true,
                                     });
-                                    return true;
+                                GameVerifiers.TrumpUsed = true;
+                                return true;
                             }
 
                             else
@@ -430,6 +421,7 @@ namespace Batak
                                     TrumpSuit = GameLoop.Trump,
                                     IsSpecialDisplay = true,
                                 });
+                                GameVerifiers.TrumpUsed = true;
                                 return true;
                             }                             
                         }
