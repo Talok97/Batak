@@ -18,6 +18,8 @@ namespace Batak
 
         public Dictionary<Players, Card> CardsInTheMiddle = new Dictionary<Players, Card>();    
 
+        public Players RoundStarter {  get; set; }
+
         public GameLoop(int rounds = 13)
         {
             Rounds = rounds;
@@ -62,7 +64,7 @@ namespace Batak
                 {
                     while (!validInput)
                     {
-                        Console.WriteLine($"{players.Name} bids");
+                        Console.WriteLine($"\n{players.Name} bids");
                         Console.WriteLine("Declare your bid (Min: 5) or pass");
                         
                         players.DisplayOrderedHand();
@@ -137,10 +139,11 @@ namespace Batak
         public Suit SelectTrump() // equals to Trump property in GameLoop to choose trump
         {
             var highestBid = GetHighestBid();
+            RoundStarter = highestBid.Key;
 
             Console.WriteLine($"{highestBid.Key.Name} has the highest bid with ({highestBid.Value}) and will select the trump.");
 
-            //contunie from asking specifically the player with highest bid either human or computer
+            //continue from asking specifically the player with highest bid either human or computer
 
             if (highestBid.Key.IsHuman)
             {
@@ -173,7 +176,7 @@ namespace Batak
                                       select suitGroup.Key).First();
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Trump suit is {potentialTrump}");
+                Console.WriteLine($"Trump suit is {potentialTrump}\n");
                 Console.ResetColor();
                 return potentialTrump;                                    
             }            
@@ -190,43 +193,68 @@ namespace Batak
             return Bids.OrderByDescending(bid => bid.Value).First();
         }
 
-        public void PlayGameLoop(List<Players> players, CardVerifiers cardVerifier, GameVerifiers gameVerifier) //loop the game for 13 rounds, start from highest bidder, winner of the previous hand will start the next hand
+        public void PlayGameLoop(List<Players> players, CardVerifiers cardVerifier, GameVerifiers gameVerifier, ScoreBoard scoreBoard) //loop the game for 13 rounds, start from highest bidder, winner of the previous hand will start the next hand
         {
-            this.Players = players;
-            DeckBuilder();
+            string continueOrExit = null;
 
-            foreach (var player in players)
-            {
-                CardDistributer(player);
-            }
-
-            Bidding();
-            Trump = SelectTrump();
-
-            for(int i = 0; i < Rounds; i++)
-            {
-                CardsInTheMiddle.Clear();
-
-                foreach(var player in players)
+            while (continueOrExit != "no")
+            {               
+                this.Players = players;
+                Bids.Clear();
+                gameVerifier.TrumpUsed = false;
+                
+                foreach(Players player in players)
                 {
-                    MoveChecker moveChecker = new MoveChecker(player, this, gameVerifier, cardVerifier);
-
-                    if (player.IsHuman)
-                    {
-                        player.PlayerPlayCard(this, moveChecker);
-                    }
-
-                    else
-                    {
-                        player.BotPlayCard(this, moveChecker);
-                    }
+                    player.WonHands = 0;
                 }
 
-                CheckRoundWinner(players, gameVerifier);
+                DeckBuilder();
+
+                foreach (var player in players)
+                {
+                    CardDistributer(player);
+                }
+
+                Bidding();
+                Trump = SelectTrump();
+
+                for (int i = 0; i < Rounds; i++)
+                {
+                    CardsInTheMiddle.Clear();
+
+                    int startingIndex = players.FindIndex(p => p == RoundStarter);
+
+
+                    for (int j = 0; j < players.Count(); j++)
+                    {
+                        int currentIndex = (startingIndex + j) % players.Count();
+                        Players currentPlayer = players[currentIndex];
+
+                        MoveChecker moveChecker = new MoveChecker(currentPlayer, this, gameVerifier, cardVerifier);
+
+                        if (currentPlayer.IsHuman)
+                        {
+                            currentPlayer.PlayerPlayCard(this, moveChecker);
+                        }
+
+                        else
+                        {
+                            currentPlayer.BotPlayCard(this, moveChecker);
+                        }
+                    }
+
+                    CheckRoundWinner(players, gameVerifier);
+                }
+
+                gameVerifier.UpdateScores(this);       
+                scoreBoard.DisplayScoreboard();
+
+                Console.WriteLine("Do you want to player another game? (Yes / No)");
+                string input = Console.ReadLine();
+                input.Trim().ToLower();
+                continueOrExit = input;
             }
 
-            gameVerifier.UpdateScores(this);
-            //update scoreboard
         }
         public void CheckRoundWinner(List<Players> players, GameVerifiers gameVerifier)
         {
@@ -239,8 +267,18 @@ namespace Batak
                 if (trumpCards.Any())
                 {
                     var winningEntry = trumpCards.OrderByDescending(kvp => kvp.Value.Rank).First();
+
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine($"{winningEntry.Key.Name} wins this hand with {winningEntry.Value.Rank} of {winningEntry.Value.Suit}");
+                    Console.ResetColor();
+
                     winningEntry.Key.WonHands++;
+
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    Console.WriteLine($"{winningEntry.Key.Name} won {winningEntry.Key.WonHands} hands.\n");
+                    Console.ResetColor();
+
+                    RoundStarter = winningEntry.Key;
                 }
                 else
                 {
@@ -248,8 +286,18 @@ namespace Batak
                                         .Where(kvp => kvp.Value.Suit == leadSuit)
                                         .OrderByDescending(kvp => kvp.Value.Rank)
                                         .First();
+
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine($"{winningEntry.Key.Name} wins this hand with {winningEntry.Value.Rank} of {winningEntry.Value.Suit}");
+                    Console.ResetColor();
+
                     winningEntry.Key.WonHands++;
+
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    Console.WriteLine($"{winningEntry.Key.Name} won {winningEntry.Key.WonHands} hands.\n");
+                    Console.ResetColor();
+
+                    RoundStarter = winningEntry.Key;
                 }
             }
         }
@@ -276,7 +324,7 @@ namespace Batak
                   
                 if (highestBidder.WonHands == wonBid || highestBidder.WonHands == wonBid + 1)
                 {
-                     Console.WriteLine($"{highestBidder.Name} wins the game with {highestBidder.WonHands} hands (bid was {highestBid.Value} ");
+                     Console.WriteLine($"{highestBidder.Name} wins the game with {highestBidder.WonHands} hands (bid was {highestBid.Value}).");
                      highestBidder.Score += highestBidder.WonHands;
                 }
 
@@ -436,7 +484,7 @@ namespace Batak
                                 }
                                 return false;
                             }
-
+                            GameVerifiers.TrumpUsed = true;
                             return true;
                         }
                     }

@@ -4,9 +4,11 @@
     {
         static void Main(string[] args)
         {
-            GameLoop gameLoop = new GameLoop();
+            GameLoop gameLoop = new GameLoop();           
 
             List<Players> players = new List<Players>();
+
+            ScoreBoard scoreBoard = new ScoreBoard(gameLoop, players);
 
             Players humanPlayer = new Players(true);
             Players botPlayer1 = new Players(false);
@@ -25,7 +27,7 @@
             botPlayer2.PlayerNaming();
             botPlayer3.PlayerNaming();
             
-            gameLoop.PlayGameLoop(players, cardVerifiers, gameVerifiers);
+            gameLoop.PlayGameLoop(players, cardVerifiers, gameVerifiers, scoreBoard);
         }
     }
 }
