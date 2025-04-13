@@ -4,11 +4,14 @@
     {
         static void Main(string[] args)
         {
+            Console.BufferWidth = 200;
+            Console.BufferHeight = 50;
             GameLoop gameLoop = new GameLoop();           
 
             List<Players> players = new List<Players>();
 
             ScoreBoard scoreBoard = new ScoreBoard(gameLoop, players);
+            AsciiArt asciiArt = new AsciiArt();
 
             Players humanPlayer = new Players(true);
             Players botPlayer1 = new Players(false);

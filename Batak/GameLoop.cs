@@ -231,6 +231,8 @@ namespace Batak
                         Players currentPlayer = players[currentIndex];
 
                         MoveChecker moveChecker = new MoveChecker(currentPlayer, this, gameVerifier, cardVerifier);
+                        UI ui = new UI();
+                        ui.SubscribeToEvents(moveChecker);
 
                         if (currentPlayer.IsHuman)
                         {
