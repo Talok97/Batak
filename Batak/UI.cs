@@ -13,6 +13,10 @@ namespace Batak
         public TrumpSuitArgs TrumpSuitArgs { get; set; }
         public AsciiArt AsciiArt { get; set; }
 
+        private const int SuitRegionLeft = 100;
+        private const int SuitRegionTop = 2;
+        private const int SuitRegionWidth = 40;
+        private const int SuitRegionHeight = 20;       
         public UI()
         {
             AsciiArt = new AsciiArt();
@@ -27,7 +31,7 @@ namespace Batak
         public void OnSuitEvent(object sender, SuitEventArgs e)
         {
             string art = "";
-            AsciiArt.ClearAsciiRegion(80, 2, 40, 20);
+            AsciiArt.ClearAsciiRegion(SuitRegionLeft, SuitRegionTop, SuitRegionWidth, SuitRegionHeight);
             switch (e.SuitOfCardsInTheMiddle)
             {
                 case Suit.Hearts:
@@ -52,57 +56,20 @@ namespace Batak
                     }
             }
 
-            int artWidth = art.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)
-                  .Max(line => line.Length);
-            int left = Console.WindowWidth - artWidth - 2;
-            int top = 2;
+            int top = SuitRegionTop;
 
-            AsciiArt.DrawSuit(art, left, top);
-            
-            Console.SetCursorPosition(0, Console.CursorTop);
+            AsciiArt.DrawSuit(art, SuitRegionLeft, top);
+
+            Console.SetCursorPosition(0, 0);
+
         }
 
         public void OnTrumpEvent(object sender, TrumpSuitArgs e)
-        {
-            string art = "";
-            AsciiArt.ClearAsciiRegion(80, 2, 40, 20);
-            switch (e.TrumpSuit)
-            {
-                case Suit.Hearts:
-                    {
-                        art = AsciiArt.Heart;
-                        break;
-                    }
-                case Suit.Diamonds:
-                    {
-                        art = AsciiArt.Diamond;
-                        break;
-                    }
-                case Suit.Clubs:
-                    {
-                        art = AsciiArt.Club;
-                        break;
-                    }
-                case Suit.Spades:
-                    {
-                        art = AsciiArt.Spade;
-                        break;
-                    }
-            }
-
-            int artWidth = art.Split("\r\n").Max(line => line.Length);
-            int left = Console.WindowWidth - artWidth - 2;
-            int top = 12;
-
-            Console.Beep();
-            Console.SetCursorPosition(left, top);
+        {                     
+            Console.Beep(600, 300);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("TRUMP SUIT");
+            Console.WriteLine("TRUMP PLAYED");
             Console.ResetColor();
-           
-            AsciiArt.DrawSuit(art, left, top);
-                       
-            Console.SetCursorPosition(0, Console.CursorTop);
         }
     }
 
@@ -134,10 +101,10 @@ namespace Batak
 
     public class AsciiArt
     {
-        public static readonly string Club = " .-~~-.\r\n    {      }\r\n .-~-.    .-~-.\r\n{              }\r\n `.__.'||`.__.'\r\n       ||\r\n      '--`";
-        public static readonly string Heart = ".-~~~-__-~~~-.\r\n{              }\r\n `.          .'\r\n   `.      .'\r\n     `.  .'\r\n       \\/";
-        public static readonly string Spade = "    /\\\r\n     .'  `.\r\n    '      `.\r\n .'          `.\r\n{              }\r\n ~-...-||-...-~\r\n       ||\r\n      '--`";
-        public static readonly string Diamond = "/\\\r\n   .'  `.\r\n  '      `.\r\n<          >\r\n `.      .'\r\n   `.  .'\r\n     \\/";
+        public static readonly string Club = "     .-~~-.\r\n    {      }\r\n .-~-.    .-~-.\r\n{              }\r\n `.__.'||`.__.'\r\n       ||\r\n      '--`";
+        public static readonly string Heart = " .-~~~-__-~~~-.\r\n{              }\r\n `.          .'\r\n   `.      .'\r\n     `.  .'\r\n       \\/";
+        public static readonly string Spade = "       /\\\r\n     .'  `.\r\n    '      `.\r\n .'          `.\r\n{              }\r\n ~-...-||-...-~\r\n       ||\r\n      '--`";
+        public static readonly string Diamond = "     /\\\r\n   .'  `.\r\n  '      `.\r\n<          >\r\n `.      .'\r\n   `.  .'\r\n     \\/";
 
         public void DrawSuit(string art, int left, int top)
         {
@@ -149,7 +116,7 @@ namespace Batak
                 Console.WriteLine(lines[i]);
             }
 
-            Console.SetCursorPosition(0, top + lines.Length);
+            //Console.SetCursorPosition(0, top + lines.Length);
         }
 
         public void ClearAsciiRegion(int left, int top, int regionWidth, int regionHeight)

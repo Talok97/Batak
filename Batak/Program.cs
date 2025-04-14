@@ -5,12 +5,13 @@
         static void Main(string[] args)
         {
             Console.BufferWidth = 200;
-            Console.BufferHeight = 50;
+            Console.BufferHeight = 70;
             GameLoop gameLoop = new GameLoop();           
 
             List<Players> players = new List<Players>();
 
             ScoreBoard scoreBoard = new ScoreBoard(gameLoop, players);
+            UI ui = new UI();
             AsciiArt asciiArt = new AsciiArt();
 
             Players humanPlayer = new Players(true);
@@ -30,7 +31,7 @@
             botPlayer2.PlayerNaming();
             botPlayer3.PlayerNaming();
             
-            gameLoop.PlayGameLoop(players, cardVerifiers, gameVerifiers, scoreBoard);
+            gameLoop.PlayGameLoop(players, cardVerifiers, gameVerifiers, scoreBoard, ui);
         }
     }
 }

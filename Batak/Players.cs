@@ -63,6 +63,10 @@ namespace Batak
             Console.WriteLine("Select the card you wish to play (choose the number).");
             Console.ResetColor();
 
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Trump Card:{gameLoop.Trump}");
+            Console.ResetColor();
+
             DisplayOrderedHand();
 
             int playerChoice = -1;

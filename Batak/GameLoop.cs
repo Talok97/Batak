@@ -193,7 +193,7 @@ namespace Batak
             return Bids.OrderByDescending(bid => bid.Value).First();
         }
 
-        public void PlayGameLoop(List<Players> players, CardVerifiers cardVerifier, GameVerifiers gameVerifier, ScoreBoard scoreBoard) //loop the game for 13 rounds, start from highest bidder, winner of the previous hand will start the next hand
+        public void PlayGameLoop(List<Players> players, CardVerifiers cardVerifier, GameVerifiers gameVerifier, ScoreBoard scoreBoard, UI ui) //loop the game for 13 rounds, start from highest bidder, winner of the previous hand will start the next hand
         {
             string continueOrExit = null;
 
@@ -222,16 +222,14 @@ namespace Batak
                 {
                     CardsInTheMiddle.Clear();
 
-                    int startingIndex = players.FindIndex(p => p == RoundStarter);
-
+                    int startingIndex = players.FindIndex(p => p == RoundStarter);                   
 
                     for (int j = 0; j < players.Count(); j++)
                     {
                         int currentIndex = (startingIndex + j) % players.Count();
                         Players currentPlayer = players[currentIndex];
 
-                        MoveChecker moveChecker = new MoveChecker(currentPlayer, this, gameVerifier, cardVerifier);
-                        UI ui = new UI();
+                        MoveChecker moveChecker = new MoveChecker(currentPlayer, this, gameVerifier, cardVerifier);                       
                         ui.SubscribeToEvents(moveChecker);
 
                         if (currentPlayer.IsHuman)
@@ -241,6 +239,7 @@ namespace Batak
 
                         else
                         {
+                            Thread.Sleep(500);
                             currentPlayer.BotPlayCard(this, moveChecker);
                         }
                     }
@@ -392,7 +391,15 @@ namespace Batak
                     }
                 }
 
-                else return true;
+                else
+                {
+                    SuitEvent?.Invoke(this, new SuitEventArgs
+                    {
+                        SuitOfCardsInTheMiddle = selectedCard.Suit,
+                        IsSpecialDisplay = true
+                    });
+                    return true;
+                }
             }
 
             else
