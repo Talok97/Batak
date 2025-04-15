@@ -354,7 +354,6 @@ namespace Batak
         public GameVerifiers GameVerifiers { get; set; }
         public CardVerifiers CardVerifiers { get; set; }
         public event EventHandler<SuitEventArgs> SuitEvent;
-        public event EventHandler<TrumpSuitArgs> TrumpEvent;
 
         public MoveChecker(Players player,GameLoop gameLoop, GameVerifiers gameVerifiers, CardVerifiers cardVerifiers)
         {
@@ -403,8 +402,7 @@ namespace Batak
             }
 
             else
-            {
-                
+            {               
                 var mainSuit = GameLoop.CardsInTheMiddle.First().Value.Suit;
 
                 if (CardVerifiers.HasSameSuit(Player, GameLoop))
@@ -461,23 +459,12 @@ namespace Batak
                                     }
                                     return false;
                                 }
-
-                                TrumpEvent?.Invoke(this, new TrumpSuitArgs
-                                    {
-                                      TrumpSuit = GameLoop.Trump,
-                                      IsSpecialDisplay = true,
-                                    });
                                 GameVerifiers.TrumpUsed = true;
                                 return true;
                             }
 
                             else
                             {
-                                TrumpEvent?.Invoke(this, new TrumpSuitArgs
-                                {
-                                    TrumpSuit = GameLoop.Trump,
-                                    IsSpecialDisplay = true,
-                                });
                                 GameVerifiers.TrumpUsed = true;
                                 return true;
                             }                             
@@ -509,12 +496,6 @@ namespace Batak
     {
         public Suit SuitOfCardsInTheMiddle { get; set; }
         public bool IsSpecialDisplay { get; set; }
-    }
-
-    public class TrumpSuitArgs : EventArgs // add an event for displaying the suit and making a noise once trump suit is used
-    {
-        public Suit TrumpSuit { get; set; }
-        public bool IsSpecialDisplay { get; set; }
-    }
+    }   
 }
 

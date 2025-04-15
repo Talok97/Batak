@@ -10,7 +10,6 @@ namespace Batak
     public class UI
     {
         public SuitEventArgs SuitEventArgs { get; set; }
-        public TrumpSuitArgs TrumpSuitArgs { get; set; }
         public AsciiArt AsciiArt { get; set; }
 
         private const int SuitRegionLeft = 100;
@@ -25,7 +24,6 @@ namespace Batak
         public void SubscribeToEvents(MoveChecker moveChecker)
         {
             moveChecker.SuitEvent += OnSuitEvent;
-            moveChecker.TrumpEvent += OnTrumpEvent;
         }
 
         public void OnSuitEvent(object sender, SuitEventArgs e)
@@ -64,13 +62,6 @@ namespace Batak
 
         }
 
-        public void OnTrumpEvent(object sender, TrumpSuitArgs e)
-        {                     
-            Console.Beep(600, 300);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("TRUMP PLAYED");
-            Console.ResetColor();
-        }
     }
 
     public class ScoreBoard
