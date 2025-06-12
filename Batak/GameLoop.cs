@@ -250,7 +250,7 @@ namespace Batak
                 gameVerifier.UpdateScores(this);       
                 scoreBoard.DisplayScoreboard();
 
-                Console.WriteLine("Do you want to player another game? (Yes / No)");
+                Console.WriteLine("Do you want to play another game? (Yes / No)");
                 string input = Console.ReadLine();
                 input.Trim().ToLower();
                 continueOrExit = input;
